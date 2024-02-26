@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VM Management Interface</title>
+</head>
+<body>
+    <h1>VM Management</h1>
+    <form action="/execute" method="post">
+        <label for="action">Select Action:</label>
+        <select name="action" id="action">
+            <option value="display">Display VM Info</option>
+            <option value="delete">Delete VM</option>
+            <option value="restart">Restart VM</option>
+            <option value="add">Add VM</option>
+        </select>
+        <input type="text" name="vmName" placeholder="VM Name">
+        <input type="text" name="template" placeholder="Template (for Add)">
+        <input type="text" name="vmHost" placeholder="VM Host (for Add)">
+        <input type="text" name="datastore" placeholder="Datastore (for Add)">
+        <button type="submit">Execute</button>
+    </form>
+</body>
+</html>
