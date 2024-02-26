@@ -27,19 +27,25 @@ function Get-VMInfo {
     }
 }
 
-# Function to delete a VM
 function Remove-SelectedVM {
     param(
         [string]$vmName
     )
     $vm = Get-VM -Name $vmName
     if ($vm) {
-        Remove-VM -VM $vm -Confirm:$false
-        Write-Output "VM deleted."
+        # Check if the VM is powered on and stop it before deletion
+        if ($vm.PowerState -eq "PoweredOn") {
+            Stop-VM -VM $vm -Confirm:$false -Kill
+        }
+
+        # Remove the VM and delete its files from the datastore
+        Remove-VM -VM $vm -DeletePermanently -Confirm:$false
+        Write-Output "VM and its files have been deleted from the datastore."
     } else {
         Write-Output "VM not found."
     }
 }
+
 
 # Function to restart a VM
 function Restart-SelectedVM {
