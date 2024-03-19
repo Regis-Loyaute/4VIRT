@@ -68,6 +68,9 @@
         </div>
         <h1>Add VM</h1>
         <form action="/execute" method="post">
+            <!-- Hidden input for action -->
+            <input type="hidden" name="action" value="add">
+            
             <input type="text" name="vmName" placeholder="VM Name">
             <input type="text" name="template" placeholder="Template">
             <input type="text" name="datastore" placeholder="Datastore">

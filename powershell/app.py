@@ -57,7 +57,7 @@ def execute():
     elif action == 'add':
         ps_command = (f". '{ps_script_path}' -vcServer '{vc_server}' -username '{username}' -password '{password}'; "
                       f"Add-NewVM -customerName '{customer_name}' -vmName '{vm_name}' -template '{template}' "
-                      f"-vmHost '{vm_host}' -datastore '{datastore}'")
+                      f"-datastore '{datastore}'")
 
     # Execute the PowerShell command
     process = subprocess.run(["powershell", "-Command", ps_command], capture_output=True, text=True)

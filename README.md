@@ -1,95 +1,131 @@
-TO DO list:
+Pour exécuter les commandes et les scripts que vous avez mentionnés sur une machine Windows locale, suivez ces étapes :
 
-Done:
+### Étape 1 : Installer VMware PowerCLI
 
-Get VM information
-Restart VM
-Delete VM
-Add new VM with automatic VM folder creation based on the customer name
-Create new port group on vswitch and change network adaptater of created VM to new network
+1. **Ouvrez PowerShell en tant qu'administrateur**. Recherchez PowerShell dans le menu de démarrage, cliquez droit dessus, puis choisissez "Exécuter en tant qu'administrateur".
 
-Remaining:
+2. **Installez VMware PowerCLI** avec la commande suivante :
 
-create a dedicated network (if not already created), and place the VM in this folder without specifying an IP address (use DHCP).
-If not the first VM, set internal IP addresses for communication within the dedicated network.
+   ```powershell
+   Install-Module -Name "VMware.PowerCLI" -Scope AllUsers
+   ```
 
-Distribute VMs automatically across available hosts:
+3. **Configurez PowerCLI** pour ignorer les avertissements de certificats non valides (utile pour les tests ; à gérer différemment en production) :
 
-This might involve logic to select a host based on current load or available resources
+   ```powershell
+   Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+   ```
 
-Ensure the customer can manage their VMs but not access others'.
+### Étape 2 : Dot Source le Script
 
-Install-Module -Name "VMware.PowerCLI"  -Scope AllUsers
+1. **Placez votre script PowerShell** (par exemple, `api.ps1`) dans un répertoire de travail de votre choix.
 
-Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+2. **Ouvrez une fenêtre PowerShell** dans ce répertoire (ou naviguez-y avec la commande `cd`).
 
-dot source the script
+3. **Exécutez le script** avec la commande dot source pour qu'il soit chargé dans votre session PowerShell courante :
 
-. .\api.ps1
+   ```powershell
+   . .\api.ps1
+   ```
 
-Get-VMInfo -vmName "docker"
+### Étape 3 : Installer Python et Flask
 
-Restart-SelectedVM -vmName "docker"
+1. **Téléchargez et installez Python** si ce n'est pas déjà fait. Assurez-vous de cocher l'option "Add Python to PATH" lors de l'installation.
 
-Add-NewVM -customerName "CustomerA" -vmName "CustomerA_docker" -template "docker-template" -datastore "esxi3-datastore1"
+2. **Ouvrez une invite de commande** ou PowerShell et installez Flask avec pip :
 
-Remove-SelectedVM -vmName "new-docker"
+   ```bash
+   pip install Flask
+   ```
 
-Add-NewVM -customerName "test-customer" -vmName "newvm" -template "winserver" -datastore "vmstor-share" 
+### Étape 4 : Exécuter l'Application Flask
 
-python app.py
+1. **Placez votre application Flask** (y compris le fichier `app.py` et d'autres ressources nécessaires) dans un répertoire de votre choix.
 
-http://localhost:5000/
+2. **Ouvrez une invite de commande** ou PowerShell dans ce répertoire.
+
+3. **Lancez votre application Flask** en exécutant :
+
+   ```bash
+   python app.py
+   ```
+
+   Assurez-vous que votre script `app.py` configure correctement l'application Flask pour écouter sur le port 5000 (ou tout autre port de votre choix).
+
+### Étape 5 : Accéder à l'Application
+
+1. **Ouvrez un navigateur web** et accédez à :
+
+   ```
+   http://localhost:5000/
+   ```
+
+   Vous devriez voir l'interface de votre application Flask, prouvant que tout fonctionne comme prévu.
+
+### Notes
+
+- Assurez-vous que le port que votre application utilise (par défaut : 5000) n'est pas bloqué par un pare-feu ou utilisé par un autre service.
+- Adapter les configurations de sécurité et de certificat selon les besoins réels de votre environnement de production pour éviter des risques de sécurité.
 
 
 
-### 1. Dockerfile
 
-Create a Dockerfile that builds an image containing PowerShell, VMware PowerCLI, Python, and Flask. Given that VMware PowerCLI runs on PowerShell and PowerShell is available on Linux, you can start with a Linux base image. Here's an example Dockerfile:
+
+
+---
+
+# Documentation d'installation Docker pour une application Flask avec PowerShell et VMware PowerCLI
+
+Cette documentation guide à travers les étapes d'installation et de déploiement d'une application Flask qui utilise PowerShell et VMware PowerCLI sur une machine locale à l'aide de Docker.
+
+
+## 1. Création du Dockerfile
+
+Le `Dockerfile` suivant construit une image contenant PowerShell, VMware PowerCLI, Python, et Flask. Commencez par créer un fichier nommé `Dockerfile` sans extension dans le répertoire de votre projet et y insérer le contenu suivant :
 
 ```Dockerfile
-# Use a base image with PowerShell
+# Utiliser une image de base avec PowerShell
 FROM mcr.microsoft.com/powershell:latest
 
-# Install Python and pip
+# Installer Python et pip
 RUN apt-get update && \
     apt-get install -y python3 python3-pip
 
-# Install VMware PowerCLI
+# Installer VMware PowerCLI
 RUN pwsh -Command "Set-PSRepository -Name PSGallery -InstallationPolicy Trusted; Install-Module -Name VMware.PowerCLI -Scope AllUsers -Confirm:$false"
 
-# Set the working directory in the container
+# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copy the Flask app to the container
+# Copier l'application Flask dans le conteneur
 COPY . /app
 
-# Install Python dependencies
+# Installer les dépendances Python
 RUN pip3 install Flask
 
-# Expose the port the app runs on
+# Exposer le port sur lequel l'application fonctionne
 EXPOSE 5000
 
-# Command to run the app
+# Commande pour exécuter l'application
 CMD [ "python3", "app.py" ]
 ```
 
-### 2. Flask Application
+## 2. Application Flask
 
-Ensure your Flask application (`app.py`) and all its dependencies (e.g., the HTML templates and the PowerShell scripts it calls) are located within the same directory as your Dockerfile. This directory structure ensures everything is copied into the Docker image.
+Assurez-vous que votre application Flask (`app.py`) et toutes ses dépendances (par exemple, les templates HTML et les scripts PowerShell qu'elle appelle) se trouvent dans le même répertoire que votre `Dockerfile`. Cette structure de répertoire garantit que tout est copié dans l'image Docker.
 
-### 3. Building and Running the Docker Container
+## 3. Construction et Exécution du Conteneur Docker
 
-After creating your Dockerfile, build the Docker image by running the following command in the same directory as your Dockerfile:
+Après avoir créé votre `Dockerfile`, construisez l'image Docker en exécutant la commande suivante dans le même répertoire que votre `Dockerfile` :
 
 ```bash
 docker build -t flask-powercli-app .
 ```
 
-Once the image is built, you can run a container from this image with:
+Une fois l'image construite, vous pouvez exécuter un conteneur à partir de cette image avec :
 
 ```bash
 docker run -p 5000:5000 flask-powercli-app
 ```
 
-This command maps port 5000 of the container to port 5000 on your host, allowing you to access the Flask application by navigating to `http://localhost:5000` in a web browser.
+Cette commande mappe le port 5000 du conteneur sur le port 5000 de votre hôte, vous permettant d'accéder à l'application Flask en naviguant vers `http://localhost:5000` dans un navigateur web.
