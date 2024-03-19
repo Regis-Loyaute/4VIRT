@@ -16,11 +16,7 @@
 
 ### Étape 2 : Dot Source le Script
 
-1. **Placez votre script PowerShell** (par exemple, `api.ps1`) dans un répertoire de travail de votre choix.
-
-2. **Ouvrez une fenêtre PowerShell** dans ce répertoire (ou naviguez-y avec la commande `cd`).
-
-3. **Exécutez le script** avec la commande dot source pour qu'il soit chargé dans votre session PowerShell courante :
+**Exécutez le script** avec la commande dot source pour qu'il soit chargé dans votre session PowerShell dans le dossier code:
 
    ```powershell
    . .\api.ps1
@@ -30,7 +26,7 @@
 
 1. **Téléchargez et installez Python** si ce n'est pas déjà fait. Assurez-vous de cocher l'option "Add Python to PATH" lors de l'installation.
 
-2. **Ouvrez une invite de commande** ou PowerShell et installez Flask avec pip :
+2. **Ouvrez un CMD** et installez Flask avec pip :
 
    ```bash
    pip install Flask
@@ -59,14 +55,6 @@
    ```
 
    Vous devriez voir l'interface de votre application Flask, prouvant que tout fonctionne comme prévu.
-
-### Notes
-
-- Assurez-vous que le port que votre application utilise (par défaut : 5000) n'est pas bloqué par un pare-feu ou utilisé par un autre service.
-- Adapter les configurations de sécurité et de certificat selon les besoins réels de votre environnement de production pour éviter des risques de sécurité.
-
-
-
 
 
 
