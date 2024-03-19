@@ -1,6 +1,6 @@
 # Connect to the vCenter server
 $vcServer = 'vcsa.4virt.lan'
-$username = 'administrator@vphsere.local'
+$username = 'administrator@vsphere.local'
 $password = '4VIRT.lan'
 Connect-VIServer -Server $vcServer -User $username -Password $password
 
@@ -27,18 +27,16 @@ function Get-VMInfo {
     }
 }
 
+# Function to delete a VM
 function Remove-SelectedVM {
     param(
         [string]$vmName
     )
     $vm = Get-VM -Name $vmName
     if ($vm) {
-        # Check if the VM is powered on and stop it before deletion
         if ($vm.PowerState -eq "PoweredOn") {
             Stop-VM -VM $vm -Confirm:$false -Kill
         }
-
-        # Remove the VM and delete its files from the datastore
         Remove-VM -VM $vm -DeletePermanently -Confirm:$false
         Write-Output "VM and its files have been deleted from the datastore."
     } else {
@@ -46,6 +44,7 @@ function Remove-SelectedVM {
     }
 }
 
+# Function to restart a VM
 function Restart-SelectedVM {
     param(
         [string]$vmName
@@ -59,7 +58,6 @@ function Restart-SelectedVM {
     }
 }
 
-# Function to add a new VM with customer-specific logic
 function Add-NewVM {
     param(
         [string]$customerName,
@@ -69,23 +67,64 @@ function Add-NewVM {
         [string]$ip = $null
     )
 
-    # Check for the customer folder; create if it doesn't exist
     $customerFolder = Get-Folder -Name $customerName -ErrorAction SilentlyContinue
     if (-not $customerFolder) {
         $customerFolder = New-Folder -Name $customerName -Location (Get-Folder 'vm')
-        # Assume the dedicated network is created here for the customer if required
     }
 
-    # Select the host and template
-    $vmHost = Get-VMHost | Sort-Object -Property MemoryUsageGB -Descending | Select-Object -First 1
-    $templateVM = Get-Template -Name $template
-    $datastore = Get-Datastore -Name $datastore
+    $vmHost = Get-VMHost | Sort-Object -Property MemoryUsageGB | Select-Object -First 1
+    
+    $templateVM = Get-Template -Name $template -ErrorAction SilentlyContinue
+    if (-not $templateVM) {
+        Write-Output "Template '$template' not found. Exiting."
+        return
+    }
 
-    # Create the VM
+    $datastore = Get-Datastore -Name $datastore -ErrorAction SilentlyContinue
+    if (-not $datastore) {
+        Write-Output "Datastore '$datastore' not found. Exiting."
+        return
+    }
+
+    if (-not $vmHost) {
+        Write-Output "VMHost not found. Exiting."
+        return
+    }
+
+    # Create or retrieve the distributed switch port group for the customer
+    $networkName = "$customerName-network"
+    $dvs = Get-VDSwitch -Name "DSwitch" -ErrorAction SilentlyContinue
+    if (-not $dvs) {
+        Write-Output "Distributed vSwitch 'DSwitch' not found. Exiting."
+        return
+    }
+    
+    $dvPortGroup = Get-VDPortgroup -VDSwitch $dvs -Name $networkName -ErrorAction SilentlyContinue
+    if (-not $dvPortGroup) {
+        $dvPortGroup = New-VDPortgroup -VDSwitch $dvs -Name $networkName
+    }
+
+    # Create the new VM
     $newVM = New-VM -Name $vmName -Template $templateVM -VMHost $vmHost -Datastore $datastore -Location $customerFolder
 
-    # VM count and network adjustment logic omitted for brevity
-    # Additional configurations, such as network settings, should go here
+    # Change the network adapter of the VM to the newly created network
+    $vmNetworkAdapter = Get-NetworkAdapter -VM $newVM
+    Set-NetworkAdapter -NetworkAdapter $vmNetworkAdapter -Portgroup $dvPortGroup -Confirm:$false
 
-    Write-Output "New VM added: $vmName"
+    # Power on the VM
+    Start-VM -VM $newVM -Confirm:$false
+
+    Write-Output "New VM added and powered on: $vmName. Network adapter is connected to $networkName. Please connect using Remote Desktop."
 }
+
+# commands to test the code:
+
+# Get-VMInfo -vmName "docker"
+
+# Restart-SelectedVM -vmName "docker"
+
+# Add-NewVM -customerName "CustomerA" -vmName "CustomerA_docker" -template "docker-template" -datastore "esxi3-datastore1"
+
+# Remove-SelectedVM -vmName "new-docker"
+
+# Add-NewVM -customerName "test-customer" -vmName "newvm" -template "winserver" -datastore "vmstor-share" 

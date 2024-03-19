@@ -6,6 +6,7 @@ Get VM information
 Restart VM
 Delete VM
 Add new VM with automatic VM folder creation based on the customer name
+Create new port group on vswitch and change network adaptater of created VM to new network
 
 Remaining:
 
@@ -34,6 +35,7 @@ Add-NewVM -customerName "CustomerA" -vmName "CustomerA_docker" -template "docker
 
 Remove-SelectedVM -vmName "new-docker"
 
+Add-NewVM -customerName "test-customer" -vmName "newvm" -template "winserver" -datastore "vmstor-share" 
 
 python app.py
 
@@ -91,10 +93,3 @@ docker run -p 5000:5000 flask-powercli-app
 ```
 
 This command maps port 5000 of the container to port 5000 on your host, allowing you to access the Flask application by navigating to `http://localhost:5000` in a web browser.
-
-### Considerations
-
-- **PowerCLI Configuration**: Running VMware PowerCLI commands may require additional configuration, such as connecting to your VMware vCenter or ESXi host. You might need to modify your application to handle these connections securely, possibly involving passing credentials securely to the container.
-- **Security**: Be cautious with how you handle VMware credentials and other sensitive information, ensuring they are not hard-coded into your Dockerfile or Flask application.
-- **Permissions**: Depending on what your PowerShell scripts are doing, you might run into permission issues. Ensure that the user within the Docker container has the necessary permissions to perform the required actions.
-- **Networking**: The Docker container needs network access to your VMware vCenter or ESXi hosts. Ensure that the container's network is configured correctly to allow this connectivity.
