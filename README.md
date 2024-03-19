@@ -1,3 +1,6 @@
+# Documentation d'installation powercli et python pour faire tourner le code sur votre PC
+
+
 ### Étape 1 : Installer VMware PowerCLI
 
 1. **Ouvrez PowerShell en tant qu'administrateur**. Recherchez PowerShell dans le menu de démarrage, cliquez droit dessus, puis choisissez "Exécuter en tant qu'administrateur".
