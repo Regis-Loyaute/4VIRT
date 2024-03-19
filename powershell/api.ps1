@@ -1,7 +1,16 @@
+param(
+    [string]$vcServer,
+    [string]$username,
+    [string]$password
+)
+
+# Check if all necessary parameters are provided
+if (-not $vcServer -or -not $username -or -not $password) {
+    Write-Output "Error: Please provide vCenter server address, username, and password."
+    exit
+}
+
 # Connect to the vCenter server
-$vcServer = 'vcsa.4virt.lan'
-$username = 'administrator@vsphere.local'
-$password = '4VIRT.lan'
 Connect-VIServer -Server $vcServer -User $username -Password $password
 
 # Function to display selected VM information
