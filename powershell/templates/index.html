@@ -3,26 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <title>VM Management Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #444;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input[type="text"], input[type="password"], select {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>VM Management</h1>
-    <form action="/execute" method="post">
-        <label for="action">Select Action:</label>
-        <select name="action" id="action">
-            <option value="display">Display VM Info</option>
-            <option value="delete">Delete VM</option>
-            <option value="restart">Restart VM</option>
-            <option value="add">Add VM</option>
-        </select><br>
-        <input type="text" name="customerName" placeholder="Customer Name (for Add)">
-        <input type="text" name="vmName" placeholder="VM Name"><br>
-        <input type="text" name="template" placeholder="Template (for Add)"><br>
-        <input type="text" name="datastore" placeholder="Datastore (for Add)"><br>
-        <!-- Additional fields for vCenter credentials -->
-        <input type="text" name="vcServer" placeholder="vCenter Server"><br>
-        <input type="text" name="username" placeholder="Username"><br>
-        <input type="password" name="password" placeholder="Password"><br>
-        <button type="submit">Execute</button>
-    </form>
+    <div class="container">
+        <h1>VM Management</h1>
+        <form action="/execute" method="post">
+            <label for="action">Select Action:</label>
+            <select name="action" id="action">
+                <option value="display">Display VM Info</option>
+                <option value="delete">Delete VM</option>
+                <option value="restart">Restart VM</option>
+                <option value="add">Add VM</option>
+            </select>
+            <input type="text" name="vmName" placeholder="VM Name">
+            <input type="text" name="template" placeholder="Template (for Add)">
+            <input type="text" name="vmHost" placeholder="VM Host (for Add)">
+            <input type="text" name="datastore" placeholder="Datastore (for Add)">
+            <!-- Additional fields for vCenter credentials -->
+            <input type="text" name="vcServer" placeholder="vCenter Server">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <!-- Assuming you add a field for customerName -->
+            <input type="text" name="customerName" placeholder="Customer Name (for Add)">
+            <button type="submit">Execute</button>
+        </form>
+    </div>
 </body>
 </html>
