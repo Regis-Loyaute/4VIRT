@@ -125,15 +125,3 @@ function Add-NewVM {
 
     Write-Output "New VM added and powered on: $vmName. Network adapter is connected to $networkName. Please connect using Remote Desktop."
 }
-
-# commands to test the code:
-
-# Get-VMInfo -vmName "docker"
-
-# Restart-SelectedVM -vmName "docker"
-
-# Add-NewVM -customerName "CustomerA" -vmName "CustomerA_docker" -template "docker-template" -datastore "esxi3-datastore1"
-
-# Remove-SelectedVM -vmName "new-docker"
-
-# Add-NewVM -customerName "test-customer" -vmName "newvm" -template "winserver" -datastore "vmstor-share" 

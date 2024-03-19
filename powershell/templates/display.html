@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>VM Management Interface</title>
+    <title>Display VM Info</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Gradient Background */
             background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-            color: #fff; /* Adjust text color for better readability on the new background */
+            color: #fff; /* Adjust text color for better readability */
             margin: 0;
             padding: 0;
             display: flex;
@@ -19,7 +18,7 @@
         .container {
             width: 100%;
             max-width: 600px;
-            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white for readability */
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -37,30 +36,27 @@
             height: auto;
             margin: 0 10px;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 40px;
+        input[type="text"], input[type="password"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
+        button {
             background-color: #007bff;
-            color: #ffffff;
-            padding: 10px 20px;
-            margin: 10px 0;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-        li:hover {
-            background-color: #0056b3;
+            color: white;
             cursor: pointer;
         }
-        a {
-            text-decoration: none;
-            color: inherit;
-            display: block;
+        button:hover {
+            background-color: #0056b3;
+        }
+        .home-button {
+            background-color: #4CAF50; /* Green */
+            margin-top: 20px;
+        }
+        .home-button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -70,13 +66,17 @@
             <img src="https://newsroom.ionis-group.com/wp-content/uploads/2020/11/supinfo-logo-2020-noir-png.png" alt="SUPINFO Logo">
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/VMware-vSphere-7.jpg" alt="VMware vSphere 7 Logo">
         </div>
-        <h1>VM Management</h1>
-        <ul>
-            <li><a href="/display">Display VM Info</a></li>
-            <li><a href="/delete">Delete VM</a></li>
-            <li><a href="/restart">Restart VM</a></li>
-            <li><a href="/add">Add VM</a></li>
-        </ul>
+        <h1>Display VM Info</h1>
+        <form action="/execute" method="post">
+            <input type="text" name="vcServer" placeholder="vCenter Server">
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <input type="hidden" name="action" value="display">
+            <input type="text" name="vmName" placeholder="VM Name">
+            <button type="submit">Display Info</button>
+        </form>
+        <!-- Button to return to home page -->
+        <button class="home-button" onclick="window.location.href='http://127.0.0.1:5000/';">Return to Home</button>
     </div>
 </body>
 </html>
