@@ -1,5 +1,3 @@
-Pour exécuter les commandes et les scripts que vous avez mentionnés sur une machine Windows locale, suivez ces étapes :
-
 ### Étape 1 : Installer VMware PowerCLI
 
 1. **Ouvrez PowerShell en tant qu'administrateur**. Recherchez PowerShell dans le menu de démarrage, cliquez droit dessus, puis choisissez "Exécuter en tant qu'administrateur".
